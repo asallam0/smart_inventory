@@ -4,3 +4,7 @@
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+smart_inventory.patches.update_empty_customer_address
+smart_inventory.patches.add_price
+
+
