@@ -4,6 +4,8 @@ app_publisher = "Adminstrtor"
 app_description = "complete inventory and sales management system"
 app_email = "asalama656@gmail.com"
 app_license = "mit"
+fixtures = ["Property Setter"]
+
 
 # Apps
 # ------------------
