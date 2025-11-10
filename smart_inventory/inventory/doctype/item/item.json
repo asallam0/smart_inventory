@@ -1,29 +1,18 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:code",
+ "autoname": "field:model",
  "creation": "2025-10-14 17:46:10.631726",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "code",
-  "name1",
+  "model",
+  "type",
   "price",
   "stock_quantity",
   "supplier"
  ],
  "fields": [
-  {
-   "fieldname": "code",
-   "fieldtype": "Data",
-   "label": "Code",
-   "unique": 1
-  },
-  {
-   "fieldname": "name1",
-   "fieldtype": "Data",
-   "label": "Name"
-  },
   {
    "fieldname": "price",
    "fieldtype": "Currency",
@@ -39,12 +28,23 @@
    "fieldtype": "Link",
    "label": "Supplier",
    "options": "Supplier"
+  },
+  {
+   "fieldname": "model",
+   "fieldtype": "Data",
+   "label": "Model",
+   "unique": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "label": "Type"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-16 04:22:14.137899",
+ "modified": "2025-11-09 14:58:41.221402",
  "modified_by": "Administrator",
  "module": "Inventory",
  "name": "Item",
