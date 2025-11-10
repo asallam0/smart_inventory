@@ -3,6 +3,8 @@ from smart_inventory.inventory.validations.item_validators import validation_ite
 from smart_inventory.inventory.validations.item_validators import validation_item_price
 from smart_inventory.inventory.validations.item_validators import validation_item_model
 from smart_inventory.inventory.validations.item_validators import validation_item_delete
+from smart_inventory.inventory.validations.item_validators import validation_item_permission
+from smart_inventory.inventory.validations.item_validators import validation_item_update
 from smart_inventory.inventory.utlis.response.success_response import send as success
 from smart_inventory.inventory.utlis.response..error_response import send as error
 @frappe.whitelist(allow_guest=True)
@@ -23,6 +25,7 @@ def get_item(Item_type):
 @frappe.whitelist()
 def Create_item(**date):
     try:
+        validation_item_permission()
         data["model"] = validation_item_model(data.get("model"))
         data["type"] = validation_item_type(data.get("type"))
         data["price"] = validation_item_price(data.get("price"))
@@ -47,6 +50,22 @@ def delete_item(Item_model):
         error(message=str(e))
     else:
          success(message="Company deleted successfully")
-    
-    
+ def update_item(**data):
+    try:
+        Item_model=data.get("model")
+        Item_model=alidation_item_update(Item_model)
+        data["type"] = validation_item_type(data.get("type"))
+        data["price"] = validation_item_price(data.get("price"))
+        doc_Item=frappe.db.exists("Item",Item_model)
+        doc_Item.update(date)
+        delete_doc.save()
+        frappe.db.commit()
+    except Exception as e :
+        error(message=str(e))
+    else:
+        success(
+            message="Item Create successfully",
+            data= item
+        )
+   
     

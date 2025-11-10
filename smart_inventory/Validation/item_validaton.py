@@ -24,11 +24,31 @@ def validation_item_model(Item_model):
     if frappe.db.exists("Item",{"model":Item_model}):
         frappe.throw(f"Item Code '{Item_model}' already exists")
     return Item_model
+def validation_item_permission():
+    if not frappe.has_permission("Item","create"):
+        frappe.throw("You do not have permission to Create Item")
+
+
 def validation_item_delete(Item_model):
     if not Item_model:
         frappe.throw("Item is required")
     if not frappe.db.exists("Item",Item_model):
         frappe.throw("Item does not exist")
     if not frappe.has_permission("Item","delete"):
-        frappe.throw("You do not have permission to delete this company")
+        frappe.throw("You do not have permission to delete this Item")
+    return Item_model
+def validation_item_delete(Item_model):
+    if not Item_model:
+        frappe.throw("Item is required")
+    if not frappe.db.exists("Item",Item_model):
+        frappe.throw("Item does not exist")
+    if not frappe.has_permission("Item","delete"):
+        frappe.throw("You do not have permission to delete this Item")
+def validation_item_update(Item_model):
+    if not Item_model:
+        frappe.throw("Item is required")
+    if not frappe.db.exists("Item",Item_model):
+        frappe.throw("Item does not exist")
+    if not frappe.has_permission("Item","update"):
+        frappe.throw("You do not have permission to Update this Item")
     return Item_model
