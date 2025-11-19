@@ -7,16 +7,11 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "name1",
+  "customer_name",
   "phone",
   "address"
  ],
  "fields": [
-  {
-   "fieldname": "name1",
-   "fieldtype": "Data",
-   "label": "Name"
-  },
   {
    "fieldname": "phone",
    "fieldtype": "Phone",
@@ -32,12 +27,17 @@
    "fieldtype": "Data",
    "options": "CUST-.###",
    "read_only": 1
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name "
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-10-16 05:07:25.127838",
+ "modified": "2025-11-17 16:58:22.338389",
  "modified_by": "Administrator",
  "module": "Inventory",
  "name": "Customer",

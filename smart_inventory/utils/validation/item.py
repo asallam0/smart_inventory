@@ -1,54 +1,56 @@
 import frappe
 import re
-def validation_item_type(Item_type):
-    Item_type= sanitize_text(Item_type)
-    if not Item_name:
-        frappe.throw("Item name is required")
-    if not re.match(r'^[\w\- ]+$', Item_type):
-        frappe.throw("Item name contains invalid characters")
-    return Item_type
-def validation_item_price(Item_price):
-    if not Item_price:
+def validate_item_exists(model):
+    if not frappe.db.exists("Item",model):
+        frappe.throw("Item does not exist")
+    return model 
+def validate_unique_item_model(model):
+    
+
+    if not model:
+        frappe.throw("Item Model is required")
+
+    if frappe.db.exists("Item", {"model": model}):
+        frappe.throw(f"Item Model '{model}' already exists")
+
+    return model
+
+def validate_item_type(item_type):
+    
+    if not item_type:
+        frappe.throw("IItem Type is required")
+    if not re.match(r'^[\w\- ]+$', item_type):
+        frappe.throw("Item Type contains invalid characters")
+    return item_type
+def validate_item_price(item_price):
+    if not item_price:
         frappe.throw("Item price is required")    
     try:
-        Item_price=float(Item_price)
+        Item_price=float(item_price)
     except(ValueError, TypeError):
-        frappe.throw("Price must be a number")
-    if Item_price <0:
+        frappe.throw("Price must be a numeric value")
+    if item_price <0:
         frappe.throw("Price must be greater than 0")
-    return Item_price
-def validation_item_model(Item_model):
-    Item_code=sanitize_text(Item_model)
-    if not Item_model:
-        frappe.frappe.throw("Item Code is required")
-    if frappe.db.exists("Item",{"model":Item_model}):
-        frappe.throw(f"Item Code '{Item_model}' already exists")
-    return Item_model
-def validation_item_permission():
-    if not frappe.has_permission("Item","create"):
-        frappe.throw("You do not have permission to Create Item")
+    return item_price
+def check_permission_create():
+    if not frappe.has_permission("Item", "create"):
+        frappe.throw("You do not have permission to create an Item")
 
 
-def validation_item_delete(Item_model):
-    if not Item_model:
-        frappe.throw("Item is required")
-    if not frappe.db.exists("Item",Item_model):
-        frappe.throw("Item does not exist")
-    if not frappe.has_permission("Item","delete"):
+
+def check_permission_update(model):
+    validate_item_exists(model)
+
+    if not frappe.has_permission("Item", "write"):
+        frappe.throw("You do not have permission to update this Item")
+
+    return model
+
+
+def check_permission_delete(model):
+    validate_item_exists(model)
+
+    if not frappe.has_permission("Item", "delete"):
         frappe.throw("You do not have permission to delete this Item")
-    return Item_model
-def validation_item_delete(Item_model):
-    if not Item_model:
-        frappe.throw("Item is required")
-    if not frappe.db.exists("Item",Item_model):
-        frappe.throw("Item does not exist")
-    if not frappe.has_permission("Item","delete"):
-        frappe.throw("You do not have permission to delete this Item")
-def validation_item_update(Item_model):
-    if not Item_model:
-        frappe.throw("Item is required")
-    if not frappe.db.exists("Item",Item_model):
-        frappe.throw("Item does not exist")
-    if not frappe.has_permission("Item","update"):
-        frappe.throw("You do not have permission to Update this Item")
-    return Item_model
+
+    return model

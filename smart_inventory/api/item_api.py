@@ -1,11 +1,12 @@
 import frappe
 from smart_inventory.utils.validation.item import (
-    validation_item_type,
-    validation_item_price,
-    validation_item_model,
-    validation_item_delete,
-    validation_item_permission,
-    validation_item_update,
+    validate_item_exists,
+    validate_unique_item_model,
+    validate_item_price,
+    validate_item_type,
+    check_permission_create,
+    check_permission_update,
+    check_permission_delete
 )
 
 from smart_inventory.utils.response.success_response import send as success
@@ -14,9 +15,9 @@ from smart_inventory.utils.response.error_response import send as error
 def get_item(model:str):
     """Fetch a single Item by model"""
     if not model:
-       error(message="Item model is required")
+        return error(message="Item model is required")
     try:
-         model=validation_item_model(model)
+         model=validate_item_exists(model)
          item = frappe.get_doc("Item", model)
     except Exception as e:
         return error(message=f"Item not found: {str(e)}")
@@ -25,42 +26,32 @@ def get_item(model:str):
         data=item.as_dict()
     )         
 @frappe.whitelist()
-def Create_item(**date):
+def create_item(**data):
     try:
-        validation_item_permission()
-        data["model"] = validation_item_model(data.get("model"))
-        data["type"] = validation_item_type(data.get("type"))
-        data["price"] = validation_item_price(data.get("price"))
+        check_permission_create()
+        data["model"] = validate_unique_item_model(data.get("model"))
+        data["type"] = validate_item_type(data.get("type"))
+        data["price"] = validate_item_price(data.get("price"))
         item = frappe.new_doc("Item")
         item.update(data)
         item.insert()
         frappe.db.commit()
     except Exception as e :
          return error(message=str(e))
-    else:
-        success(
+    return success(
             message="Item Create successfully",
-            data= item
-        )
-@frappe.whitelist()
-def delete_item(model:str):
+            data= item)
+        
+@frappe.whitelist()  
+def update_item(model,**data):
     try:
-        model=validation_item_delete(model)
-        frappe.delete_doc("Item",model)
-        frappe.db.commit()
-    except Exception as e:
-        return error(message=str(e))
-    return success(message="Item deleted successfully")
-         
- def update_item(**data):
-    try:
-        model=data.get("model")
-        model=validation_item_update(model)
+        check_permission_update(model)
+        item = frappe.get_doc("Item", model)
         if "type" in data:
-            data["type"] = validation_item_type(data["type"])
+            data["type"] = validate_item_type(data["type"])
         if "price" in data:
-            data["price"] = validation_item_price(data["price"])
-        model.update(date)
+            data["price"] = validate_item_price(data["price"])
+        item.update(data)
         item.save()
         frappe.db.commit()
     except Exception as e :
@@ -69,5 +60,14 @@ def delete_item(model:str):
         message="Item updated successfully",
         data=item
     )
-   
+@frappe.whitelist()
+def delete_item(model:str):
+    try:
+        check_permission_delete(model)
+        frappe.delete_doc("Item",model)
+        frappe.db.commit()
+    except Exception as e:
+        return error(message=str(e))
+    return success(message="Item deleted successfully")
+         
     
